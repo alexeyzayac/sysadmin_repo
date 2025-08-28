@@ -1,0 +1,53 @@
+################################################################
+
+# Установка Jenkins
+
+# 1. Java перед Jenkins
+sudo apt-get update
+sudo apt-get install fontconfig default-jre openjdk-17-jre -y
+
+# 2. Добавление ключа и репозитория Jenkins
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | \
+  sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/" | \
+  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# 3. Установка Jenkins
+sudo apt-get update
+sudo apt-get install jenkins -y
+
+# 4. Запуск и проверка Jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+################################################################
+
+# Настройка Jenkins на UI
+
+# 1. Доступ к интерфейсу
+# Открыть в браузере: 
+http://<IP_сервера>:8080
+
+# 2. Получение пароля разблокировки
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+# Скопируйте и вставьте этот пароль в веб-интерфейс
+
+# 3. Первичная настройка через UI
+1. Выберите Install suggested plugins (установить рекомендуемые плагины)
+2. Создайте первого администратора (логин/пароль)
+3. Установите имя Jenkins URL (обычно Jenkins сам подставляет http://<IP>:8080/)
+
+################################################################
+
+# Доступ Jenkins к Docker
+sudo usermod -aG docker jenkins      # Добавьте пользователя Jenkins в группу docker 
+sudo systemctl restart jenkins       # Перезапустите Jenkins
+sudo su - jenkins                    # Переключитесь на пользователя Jenkins  
+docker ps                            # Проверьте, что Jenkins видит Docker
+
+# Доступ Jenkins к Go
+sudo nano /etc/default/jenkins       # Открыть файл
+PATH=$PATH:/usr/local/go/bin         # Добавить строчку в переменную PATH
+sudo systemctl restart jenkins       # Перезапустить Jenkins

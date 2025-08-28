@@ -1,0 +1,23 @@
+################################################################
+
+# Установка GO
+
+# 1. Заходим на данный сайт и скачиваем актуальный пакет
+https://go.dev/doc/install 
+
+# 2. Удаляем предыдушие версии go и распаковываем архив в /usr/local
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go<версия>linux-amd64.tar.gz
+
+# 3. Добавляем go в пересенную окружения
+export PATH=$PATH:/usr/local/go/bin
+
+# 4. Проверяем версию
+go version
+
+################################################################
+
+# Доступ Jenkins к Go
+sudo nano /etc/default/jenkins       # Открыть файл
+PATH=$PATH:/usr/local/go/bin         # Добавить строчку
+sudo systemctl restart jenkins       # Перезапустить Jenkins
