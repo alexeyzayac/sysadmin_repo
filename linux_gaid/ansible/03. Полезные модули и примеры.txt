@@ -1,0 +1,57 @@
+# Ansible предоставляет множество модулей для выполнения различных задач.
+
+
+# Управление пакетами
+- name: Установка пакета apt
+  apt:
+    name: vim
+    state: present
+
+# Управление службами
+- name: Запуск сервиса
+  service:
+    name: nginx
+    state: started
+
+- name: Перезапуск сериса
+  service:
+    name: nginx
+    state: restarted
+
+- name: Включение автозапуска сервиса
+  service:
+    name: nginx
+    enabled: yes
+
+# Работа с файлами и директориями
+- name: Копировать файл из src в dest
+  copy:
+    src: ./example_file
+    dest: /tmp/example_file
+    mode: '0644'
+
+- name: Создание директория
+  file:
+    path: /etc/some_directory
+    state: directory
+    mode: '0755'
+
+- name: Сздание мягкой ссылки
+  file:
+    src: /path/to/file
+    dest: /path/to/link
+    state: link
+
+# Управление пользователями и группами
+- name: Создание пользователя
+  user:
+    name: username
+    state: present
+    uid: 1040
+    group: admin
+
+- name: Добавление пользователя в группу
+  user:
+    name: username
+    groups: wheel
+    append: yes

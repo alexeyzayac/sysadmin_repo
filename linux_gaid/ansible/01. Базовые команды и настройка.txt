@@ -1,0 +1,5 @@
+# Базовые команды и настройка
+ansible all -m ping                                                                                     # Проверка подключения ко всем узлам в инвентаре
+ansible all -m ping -u username                                                                         # Проверка подключения с другим пользователем
+ansible all -m ping --private-key=~/.ssh/custom_id                                                      # Проверка подключения с использованием собственного ключа SSH
+ansible all -m ping --ask-pass                                                                          # Проверка подключения с запросом пароля

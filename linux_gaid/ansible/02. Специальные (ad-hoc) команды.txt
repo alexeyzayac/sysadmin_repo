@@ -1,0 +1,40 @@
+# Специальные (ad-hoc) команды
+
+# Выполение команд:
+ansible all -a "uname -a"                                                                               # Выполнение команды на всех узлах (uname -a как пример)
+ansible bastion -a "cat /etc/hosts" -b                                                                  # Посмотерть содержмое файла hosts
+ansible all -m lineinfile -a "path=/etc/hosts line='10.0.1.9 web-a'" -b                                 # Добавить строчку в файл hosts
+ansible webservers -a "/sbin/reboot" -b                                                                 # Перезагрузка всех хостов в группе 'web' (-b - использованием sudo)
+ansible all -a "uname" -f 10 -b                                                                         # Параллельное выполнение команды на 10 хостах одновременно
+
+# Копирование/удаление
+ansible all -m copy -a "src=/etc/hosts dest=/etc/hosts mode=600 owner=root group=root" -b               # Копирование файла на хосты (scr-откуда, dest-куда, mode-chmod, owner-пользователь, group-группа)
+ansible all -m file -a "path=/home/user/123.txt state=absent" -b                                        # Удаление файла 123.txt
+
+# Работа с директориями
+ansible all -m file -a "path=/tmp/testdir state=directory mode=0755" -b                                 # Создание директория
+ansible all -m file -a "path=/tmp/testdir state=absent" -b                                              # Удаление директория
+
+# Установка/удаление пакетов
+ansible all -m apt -a "name=nginx state=present update_cache=yes" -b                                    # Установка пакета nginx с помощью модуля apt
+ansible webservers -m apt -a "name=vim state=absent" -b                                                 # Удаление пакета vim с помощью модуля apt
+ansible all -m apt -a "update_cache=yes upgrade=dist autoremove=yes" -b                                 # Полное обновление системы с удалением устаревших пакетов
+
+# Работа с УЗ
+ansible all -m user -a "name=alexey password='$HASH'" -b                                                # Создание пользователя
+    HASH=$(python3 -c 'import crypt; print(crypt.crypt("123", crypt.mksalt(crypt.METHOD_SHA512)))')     # Генерация пароля с помощью python3 = 123
+ansible all -m user -a "name=alexey state=absent" -b                                                    # Удаление уз пользователя
+ansible all -m user -a "name=alexey state=absent remove=yes"                                            # Также удалит домашний каталог
+ansible all -m user -a "name=alexey groups=sudo append=yes" -b                                          # Добавить пользователя в группу sudo (append=yes - сохранить в остальных группах)
+ansible all -m user -a "name=alexey groups=docker" -b                                                   # Удалиит все группы кроме user и docker
+
+# Работа с сервисами
+ansible all -m service -a "name=nginx state=restarted"                                                  # Перезапуск сервиса nginx
+ansible all -m systemd -a "name=nginx enabled=yes" -b                                                   # Включить автозапуск
+
+# Управление процессами
+ansible all -m shell -a "pkill -f nginx" -b                                                             # Убить процесс по имени
+
+# Cron задачи
+ansible all -m cron -a "name='backup job' minute=0 hour=2 job='/usr/local/bin/backup.sh'" -b            # Добавить cron-задание
+ansible all -m cron -a "name='backup job' state=absent" -b                                              # Удалить cron-задание
