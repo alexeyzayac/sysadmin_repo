@@ -1,5 +1,42 @@
 # Базовые команды и настройка
-ansible all -m ping                                                                                     # Проверка подключения ко всем узлам в инвентаре
-ansible all -m ping -u username                                                                         # Проверка подключения с другим пользователем
-ansible all -m ping --private-key=~/.ssh/custom_id                                                      # Проверка подключения с использованием собственного ключа SSH
-ansible all -m ping --ask-pass                                                                          # Проверка подключения с запросом пароля
+ansible all -m ping                                                                      # Проверка подключения ко всем узлам в инвентаре
+ansible all -m ping -u username                                                          # Проверка подключения с другим пользователем
+ansible all -m ping --private-key=~/.ssh/custom_id                                       # Проверка подключения с использованием собственного ключа SSH
+ansible all -m ping --ask-pass                                                           # Проверка подключения с запросом пароля
+
+# Разбор команд
+ansible all -m command -a "uptime" -b
+    ansible         # запуск ad-hoc команды в Ansible.
+    all             # группа всех хостов
+    -m              # указывает модуль для запуска команды command
+    -a              # аргумент для модуля, для запуска "uptime"   
+    -b              # (become) → выполнить команду от имени root (через sudo)
+
+ansible all -i hosts.ini -m ping   
+    -i              # необходим для указания inventory (файла с хостами)
+
+ansible all -a "whoami" -b --become-user=postgres
+     --become-user  # вполнить от имени другого пользователя
+
+ansible all -m ping -u user
+    -u              # указать пользователя для SSH
+
+ansible all -m ping -k
+    -k              # запросить пароль для SSH
+
+ansible all -m ping -vvv
+    -v              # немного подробнее
+    -vv             # ещё подробнее
+    -vvv            # очень подробно (включая SSH)
+    -vvvv           # прям отладка (всё, включая переменные и команды)
+
+#Мини-шпаргалка:
+-i              → # указать inventory
+-m              → # выбрать модуль
+-a              → # аргументы для модуля
+-b              → # sudo root
+--become-user   → # другой пользователь
+-u              → # SSH-пользователь
+-k              → # пароль для SSH
+-K              → # пароль для sudo
+-v              → # подробный вывод

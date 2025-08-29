@@ -1,0 +1,35 @@
+# Шпаргалка по ключам ansible
+# Ключ	                                    # Пример	                                                        # Что делает
+all, web, host	                    ansible all -m ping
+                                    ansible web -m ping
+                                    ansible 10.0.1.9 -m ping	                                                # Указываем цель: все хосты, группа или конкретный хост
+
+-i	                                ansible all -i hosts.ini -m ping	                                        # Указать свой inventory-файл
+
+-m	                                ansible all -m command -a "uptime"	                                        # Какой модуль использовать (по умолчанию command)
+
+-a	                                ansible all -m apt -a "name=nginx state=present"	                        # Аргументы для модуля
+
+-b	                                ansible all -m apt -a "name=vim state=present" -b	                        # Выполнить с правами root (sudo)
+
+--become-user	                    ansible all -a "whoami" -b --become-user=postgres	                        # Выполнить от имени другого пользователя
+
+-u	                                ansible all -m ping -u user	                                                # Подключаться к хосту под указанным пользователем
+
+-k	                                ansible all -m ping -k	                                                    # Запросить пароль для SSH (если нет ключей)
+
+-K	                                ansible all -m apt -a "name=htop state=present" -b -K	                    # Запросить пароль для sudo
+
+-v	                                ansible all -m ping -v	                                                    # Подробный вывод
+
+-vvv	                            ansible all -m ping -vvv	                                                # Очень подробный вывод, включая SSH
+
+-f	                                ansible all -m ping -f 10	                                                # Количество параллельных процессов (по умолчанию 5)
+
+--limit	                            ansible all -m ping --limit "10.0.1.*"	                                    # Ограничить выполнение только на определённых хостах
+
+--list-hosts	                    ansible web --list-hosts	                                                # Просто показать список хостов, на которых будет выполняться команда
+
+--check	                            ansible all -m apt -a "name=nginx state=present" -b --check	                # Режим проверки (ничего не меняет)
+
+--diff	                            ansible all -m copy -a "src=local.conf dest=/etc/local.conf" -b --diff	    # Показывает различия при изменении файлов
