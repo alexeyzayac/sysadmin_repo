@@ -61,3 +61,6 @@ rm -d         # удаляет пустые директории
 
 # touch 
 # mkdir
+
+
+sudo apt purge ~c
