@@ -1,0 +1,44 @@
+################################################################
+
+# Установка Cisco Packet Tracer
+
+# 1. Заходим на данный сайт и скачиваем пакет
+https://cisco-packet-tracer.fileion.com/linux/download 
+
+# 2. Устанавливаем зависимости:
+sudo add-apt-repository -y universe
+sudo apt update 
+sudo apt full-upgrade -y
+sudo apt install -y libxcb-xinerama0-dev libgl1 libglx-mesa0
+sudo apt install -y equivs
+
+mkdir -p /tmp/equivs && cd /tmp/equivs
+
+# 3. Создаём «пустышку» для зависимостей:
+cat > libgl1-mesa-glx.control <<'EOF'
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: libgl1-mesa-glx
+Version: 1.0
+Maintainer: You <you@example.com>
+Provides: libgl1-mesa-glx
+Architecture: amd64
+Description: Dummy transitional package to satisfy PacketTracer dependency.
+ Depends: libgl1, libglx-mesa0
+EOF
+
+equivs-build libgl1-mesa-glx.control
+sudo dpkg -i libgl1-mesa-glx_1.0_amd64.deb
+
+# 4. Устанавливаем Packet Tracer:
+cd -
+sudo apt install -y ./CiscoPacketTracer822_amd64_signed.deb
+sudo apt-get install -f -y
+
+
+# 5. Запускаем
+command -v packettracer || type packettracer
+packettracer
+ 
